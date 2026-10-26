@@ -1,0 +1,2929 @@
+<!DOCTYPE html>
+<html lang="uz" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#003399">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bizda Bor">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Bizda Bor — avtomobil ijarasini boshqarish tizimi">
+  <title>BIZDA BOR — Avto Arenda boshqaruvi</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Supabase Official Client SDK v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ==========================================================================
+       "Bizda Bor" - All-in-One Mobile-First Modern Pure CSS
+       Hech qanday og'ir kutubxonalarsiz, 100% mustaqil bitta faylda
+       ========================================================================== */
+    :root {
+      --primary: #0757E8;
+      --primary-hover: #0645B8;
+      --primary-light: #EAF2FF;
+      --primary-ring: rgba(7, 87, 232, 0.24);
+      --accent: #FF8A00;
+      --accent-hover: #E87500;
+      --accent-light: #fffbeb;
+      --success: #08A878;
+      --success-hover: #078A63;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-light: #fef2f2;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --info: #0284c7;
+      --info-light: #f0f9ff;
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --header-height: 60px;
+      --bottom-nav-height: 62px;
+      --touch-target: 48px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 6px 18px rgba(18, 57, 115, 0.10);
+      --shadow-lg: 0 12px 28px rgba(18, 57, 115, 0.16);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+
+      /* Light Theme */
+      --bg-body: #F2F6FC;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-input: #ffffff;
+      --bg-muted: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-inverse: #ffffff;
+      --border-subtle: #f1f5f9;
+      --border-color: #D6E2F3;
+      --nav-backdrop: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Dark Theme */
+    html.dark {
+      --bg-body: #0b1120;
+      --bg-surface: #151f32;
+      --bg-surface-elevated: #1e293b;
+      --bg-input: #1e293b;
+      --bg-muted: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-inverse: #0f172a;
+      --border-subtle: #1e293b;
+      --border-color: #334155;
+      --primary-light: rgba(0, 51, 153, 0.25);
+      --accent-light: rgba(245, 158, 11, 0.15);
+      --success-light: rgba(16, 185, 129, 0.15);
+      --danger-light: rgba(239, 68, 68, 0.15);
+      --nav-backdrop: rgba(15, 23, 42, 0.94);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100%;
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--header-height);
+      padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 16px) + 36px);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a, button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+      outline: none;
+      border: none;
+      background: none;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* HEADER */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: var(--nav-backdrop);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 40;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-inner {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 6px rgba(0, 51, 153, 0.3);
+    }
+
+    .logo-text {
+      font-size: 1.18rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .logo-primary { color: var(--primary); }
+    html.dark .logo-primary { color: #60a5fa; }
+    .logo-accent { color: var(--accent); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      min-height: 42px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+      font-size: 1rem;
+    }
+    .icon-btn:active { transform: scale(0.95); }
+
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      min-height: 38px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+      flex-shrink: 0;
+    }
+    .sync-dot.connected {
+      background: var(--success);
+      box-shadow: 0 0 0 2px var(--success-light);
+    }
+    .sync-dot.connecting {
+      background: var(--warning);
+      animation: pulseDot 1.2s infinite;
+    }
+    .sync-dot.error { background: var(--danger); }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .sync-text { display: none; }
+    @media (min-width: 540px) { .sync-text { display: inline; white-space: nowrap; } }
+
+    /* MAIN CONTAINER & VIEWS */
+    .app-main {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px;
+      flex: 1;
+    }
+
+    .view {
+      display: none;
+      animation: fadeInView 0.2s ease forwards;
+    }
+    .view.active { display: block; }
+
+    @keyframes fadeInView {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .view-header { margin-bottom: 18px; }
+    .view-title-row { display: flex; align-items: center; gap: 12px; }
+    .view-title { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px; }
+    .view-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: var(--touch-target);
+      min-height: var(--touch-target);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 1.1rem;
+    }
+
+    /* HERO CARDS */
+    .hero-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 600px) {
+      .hero-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .hero-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      text-align: left;
+      transition: transform 0.15s;
+    }
+    .hero-card:active { transform: scale(0.98); }
+
+    .hero-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-lg);
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    html.dark .hero-card-icon { color: #60a5fa; }
+    .hero-card-icon.accent {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .hero-card-content { flex: 1; }
+    .hero-card-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: var(--primary-light);
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    html.dark .hero-card-badge { color: #60a5fa; }
+    .hero-card-badge.accent {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .hero-card-title { font-size: 1.1rem; font-weight: 800; }
+    .hero-card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.35; }
+    .hero-card-arrow { color: var(--text-muted); font-size: 1rem; }
+
+    /* STATUS & ACTIONS PANELS */
+    .status-panel, .actions-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .status-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-muted);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+    .status-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: var(--bg-surface);
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .status-icon.success { color: var(--success); }
+    .status-icon.warning { color: var(--warning); }
+    .status-icon.danger { color: var(--danger); }
+    .status-info { display: flex; flex-direction: column; }
+    .status-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+    .status-value { font-size: 0.92rem; font-weight: 800; }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .actions-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--touch-target);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.88rem;
+      background: var(--bg-muted);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+    .action-btn:active { transform: scale(0.98); }
+    .action-btn.danger { color: var(--danger); }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .stat-icon.primary { background: var(--primary-light); color: var(--primary); }
+    html.dark .stat-icon.primary { color: #60a5fa; }
+    .stat-icon.success { background: var(--success-light); color: var(--success); }
+    .stat-icon.warning { background: var(--warning-light); color: var(--warning); }
+    .stat-info { display: flex; flex-direction: column; }
+    .stat-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+    .stat-value { font-size: 1.25rem; font-weight: 900; }
+
+    /* SEARCH BAR */
+    .search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .search-bar i {
+      position: absolute;
+      left: 16px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-bar input {
+      width: 100%;
+      min-height: var(--touch-target);
+      padding: 10px 16px 10px 44px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      font-size: 0.92rem;
+    }
+    .search-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+    /* TOOLBAR & BUTTONS */
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .table-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+    }
+    @media (min-width: 600px) { .table-actions { width: auto; } }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--touch-target);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn.primary { background: var(--primary); color: #fff; }
+    .btn.secondary { background: var(--bg-surface); border: 1px solid var(--border-color); }
+    .btn.success { background: var(--success); color: #fff; }
+    .btn.danger { background: var(--danger); color: #fff; }
+
+    /* RESPONSIVE TABLE */
+    .table-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+      margin-bottom: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .data-table th {
+      padding: 12px 14px;
+      background: var(--bg-muted);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .data-table tbody tr {
+      transition: background-color 0.15s;
+      cursor: pointer;
+    }
+    .data-table tbody tr:hover { background-color: var(--primary-light); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .col-num { width: 36px; text-align: center; }
+    .col-price { white-space: nowrap; }
+    .col-actions { text-align: right; white-space: nowrap; }
+
+    .empty-state {
+      padding: 40px 16px !important;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .empty-state i {
+      font-size: 2.5rem;
+      opacity: 0.35;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .empty-state p { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+
+    .row-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+    }
+    .action-icon-btn.edit:hover { color: var(--accent); border-color: var(--accent); }
+    .action-icon-btn.delete:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* TO'LOV STATUS TUGMALARI */
+    .payment-toggle-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      min-height: 36px;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      transition: all 0.15s;
+    }
+    .pay-btn:active { transform: scale(0.96); }
+    .pay-btn.paid-active {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    }
+    .pay-btn.paid-inactive {
+      background: var(--success-light);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .pay-btn.unpaid-active {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    }
+    .pay-btn.unpaid-inactive {
+      background: var(--danger-light);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* UZBEKISTAN LICENSE PLATE */
+    .uz-plate {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      color: #111827;
+      border: 2px solid #1f2937;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 2px 8px 2px 6px;
+      user-select: none;
+      line-height: 1.2;
+    }
+    .uz-plate-region {
+      border-right: 1.5px solid #d1d5db;
+      padding-right: 6px;
+      margin-right: 6px;
+      font-size: 0.85em;
+    }
+    .uz-plate-flag {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-left: 1.5px solid #d1d5db;
+      padding-left: 6px;
+      margin-left: 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #003399;
+    }
+    .uz-plate-flag-stripes {
+      width: 14px;
+      height: 9px;
+      border-radius: 1px;
+      background: linear-gradient(to bottom, #1EB53A 33.3%, #ffffff 33.3%, #ffffff 66.6%, #0099B5 66.6%);
+      border: 0.5px solid rgba(0,0,0,0.2);
+      margin-bottom: 1px;
+    }
+    .uz-plate-lg {
+      font-size: 1.3rem;
+      padding: 6px 14px 6px 10px;
+      border-width: 2.5px;
+      border-radius: 8px;
+    }
+
+    /* TOOLBAR ACTIONS (Mobilda ham, desktopda ham qulay) */
+    .btn-add-car-highlight {
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 51, 153, 0.25);
+    }
+
+    /* BOTTOM NAVIGATION BAR (Telegram / Instagram UX) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--bottom-nav-height);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: var(--nav-backdrop);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      z-index: 45;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: var(--touch-target);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      position: relative;
+      text-decoration: none;
+    }
+    .nav-item i { font-size: 1.25rem; transition: transform 0.2s; }
+    .nav-item.active { color: var(--primary); }
+    html.dark .nav-item.active { color: #60a5fa; }
+    .nav-item.active i { transform: scale(1.15) translateY(-1px); }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25%;
+      right: 25%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 0 0 3px 3px;
+    }
+    html.dark .nav-item.active::before { background: #60a5fa; }
+
+    @media (min-width: 768px) {
+      body { padding-bottom: 110px; }
+      .bottom-nav {
+        max-width: 480px;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 14px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-xl);
+        padding-bottom: 0;
+        height: 56px;
+      }
+    }
+
+    /* PENALTIES VIEW */
+    .penalties-overview {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, var(--primary) 100%);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      color: #ffffff;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    .penalties-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      font-size: 0.72rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .penalties-title { font-size: 1.35rem; font-weight: 900; margin-bottom: 6px; }
+    .penalties-desc { font-size: 0.82rem; color: #cbd5e1; line-height: 1.45; margin-bottom: 18px; }
+    .penalties-tiers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .tier-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .tier-name { display: block; font-size: 0.68rem; font-weight: 700; margin-bottom: 4px; }
+    .tier-card.safe .tier-name { color: #34d399; }
+    .tier-card.warning .tier-name { color: #fbbf24; }
+    .tier-card.danger .tier-name { color: #f87171; }
+    .tier-count { font-size: 1.3rem; font-weight: 900; }
+
+    .penalty-stepper { display: inline-flex; align-items: center; gap: 6px; }
+    .step-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-muted);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+    .step-btn.plus { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* DETAIL VIEW */
+    .detail-banner {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      color: #ffffff;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    @media (min-width: 600px) {
+      .detail-banner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .detail-payment-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .detail-payment-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .detail-payment-badge.paid {
+      background: rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .detail-payment-badge.unpaid {
+      background: rgba(239, 68, 68, 0.25);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 700px) {
+      .detail-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .detail-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .detail-card-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-list { display: flex; flex-direction: column; gap: 12px; }
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .detail-label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .detail-value { font-size: 0.92rem; font-weight: 800; }
+
+    .contact-actions { display: flex; align-items: center; gap: 8px; }
+    .phone-call-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      background: var(--success);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      min-height: var(--touch-target);
+    }
+    .tg-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: var(--touch-target);
+      min-height: var(--touch-target);
+      border-radius: var(--radius-md);
+      background: #0284c7;
+      color: #fff;
+      font-size: 1.15rem;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-muted);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.3s;
+    }
+
+    .detail-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 16px 18px;
+      margin-top: 20px;
+      margin-bottom: 45px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* MODAL DIALOGS */
+    .modal {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal[open], .modal.open { display: flex; }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1;
+    }
+    .modal-content {
+      position: relative;
+      z-index: 2;
+      width: 92%;
+      max-width: 540px;
+      max-height: 90vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow-y: auto;
+    }
+    .modal-content.modal-small { max-width: 400px; padding: 22px; text-align: center; }
+    .modal-content.modal-wide { max-width: 640px; }
+
+    /* High-contrast modal text: always white in both light and dark themes */
+    .modal-content {
+      background: #111c30;
+      color: #ffffff;
+      border-color: #334155;
+    }
+    .modal-content .modal-title,
+    .modal-content .form-field label,
+    .modal-content .form-field,
+    .modal-content p,
+    .modal-content .modal-body,
+    .modal-content .form-actions,
+    .modal-content .btn.secondary {
+      color: #ffffff !important;
+    }
+    .modal-content .modal-subtitle,
+    .modal-content .form-hint,
+    .modal-content small,
+    .modal-content .help-text {
+      color: #dbeafe !important;
+    }
+    .modal-content input,
+    .modal-content textarea,
+    .modal-content select {
+      color: #ffffff !important;
+      background: #1e293b !important;
+      border-color: #475569 !important;
+    }
+    .modal-content input::placeholder,
+    .modal-content textarea::placeholder {
+      color: #cbd5e1 !important;
+      opacity: 1;
+    }
+    .modal-content input[type="date"] { color-scheme: dark; }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 800; }
+    .modal-subtitle { font-size: 0.78rem; color: var(--text-muted); }
+    .modal-close {
+      min-width: 36px;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+    }
+    .modal-form { padding: 18px 20px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (min-width: 600px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .form-field { display: flex; flex-direction: column; gap: 4px; }
+    .form-field.full-width { grid-column: 1 / -1; }
+    .form-field label { font-size: 0.8rem; font-weight: 700; }
+    .form-field .required { color: var(--danger); }
+    .form-field input, .form-field textarea {
+      width: 100%;
+      min-height: var(--touch-target);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+    .form-field input:focus, .form-field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+    .form-hint { font-size: 0.7rem; color: var(--text-muted); }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .sql-code {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.35;
+      max-height: 150px;
+      overflow-x: auto;
+      white-space: pre;
+      margin-top: 8px;
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      top: calc(var(--header-height) + 12px);
+      right: 16px;
+      z-index: 110;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 90vw;
+      width: 340px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-lg);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-8px);
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); color: #000; }
+    .toast.info { background: var(--info); }
+
+    /* FOOTER */
+    .app-footer {
+      margin-top: auto;
+      padding: 20px 16px;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* A4 PRINT */
+    #print-section { display: none; }
+    @media print {
+      @page { size: A4 landscape; margin: 8mm 10mm; }
+      html, body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+      .app-header, .bottom-nav, .fab, .app-footer, .view, .modal, .toast-container { display: none !important; }
+      #print-section { display: block !important; width: 100% !important; }
+      .excel-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; border: 1.5px solid #000; }
+      .excel-table th, .excel-table td { padding: 5px 6px; border: 1px solid #777; }
+      .excel-table th { background: #e2e8f0 !important; font-weight: 800; }
+    }
+
+    /* BIZDA BOR — refreshed automotive brand */
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #0878FF 0%, #0644C7 58%, #08B9D8 100%);
+      font-size: 1.3rem;
+      box-shadow: 0 7px 18px rgba(7, 87, 232, .30);
+      border: 1px solid rgba(255,255,255,.55);
+    }
+    .logo-badge i { filter: drop-shadow(0 2px 2px rgba(0,0,0,.2)); }
+    .logo-text { letter-spacing: -.7px; }
+    .logo-primary { color: #0757E8; }
+    .logo-accent { color: #FF8A00; }
+    .hero-card, .stat-card, .status-panel, .actions-panel, .detail-card,
+    .table-wrapper, .detail-actions-bar {
+      box-shadow: 0 8px 24px rgba(20, 55, 110, .07);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .hero-card:hover, .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 13px 28px rgba(20, 55, 110, .12);
+      border-color: #B7D0FF;
+    }
+    .btn.primary, .btn-add-car-highlight {
+      background: linear-gradient(135deg, #0878FF, #0644C7) !important;
+      box-shadow: 0 5px 14px rgba(7, 87, 232, .23);
+    }
+    .hero-card-icon {
+      background: linear-gradient(135deg, #EAF2FF, #D6E7FF);
+      color: #0757E8;
+    }
+    .hero-card-icon.accent {
+      background: linear-gradient(135deg, #FFF0D8, #FFE0B2);
+      color: #E87500;
+    }
+    .nav-item.active { color: #0757E8; }
+    .nav-item.active::before { background: linear-gradient(90deg, #0878FF, #08B9D8); }
+    .search-bar input:focus, .form-field input:focus, .form-field textarea:focus {
+      border-color: #0878FF;
+      box-shadow: 0 0 0 3px rgba(8,120,255,.15);
+    }
+
+  
+    /* Refined bright palette and phone-first layout */
+    :root { --primary: #0878ff; --accent: #ff8a00; --success: #10b981; --border-color: #d6e6fb; }
+    .app-header { background: rgba(255,255,255,.96); box-shadow: 0 4px 22px rgba(10,60,130,.10); }
+    .logo-badge { width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(135deg,#0785ff,#04c5e5); box-shadow: 0 7px 18px rgba(0,120,255,.28); font-size: 1.3rem; }
+    .hero-card, .stat-card, .status-panel, .actions-panel, .detail-card { border: 1px solid #dceaff; box-shadow: 0 8px 24px rgba(16,80,160,.08); }
+    .btn.primary, .action-btn, .hero-card { transition: transform .2s ease, box-shadow .2s ease; }
+    .btn.primary { background: linear-gradient(135deg,#0878ff,#05b8d9); }
+    @media (max-width: 600px) {
+      .header-inner { padding: 0 12px; gap: 6px; }
+      .logo-text { font-size: 1rem; }
+      .logo-badge { width: 38px; height: 38px; }
+      .sync-text { display: none !important; }
+      .sync-badge { padding: 8px; min-width: 34px; }
+      .view-header { padding-left: 14px; padding-right: 14px; }
+      .view-content { padding-left: 12px; padding-right: 12px; }
+      .hero-cards { grid-template-columns: 1fr; gap: 12px; }
+      .stats-bar { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+      .stat-card { min-width: 0; padding: 12px; }
+      .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .table-toolbar .table-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
+      .table-toolbar .btn { width: 100%; justify-content: center; }
+      .modal-content { width: calc(100% - 20px); max-height: 88dvh; overflow-y: auto; margin: 10px; }
+      .bottom-nav { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    }
+
+  </style>
+<style>
+/* Final cleanup: rental management only */
+#view-penalties, [data-view="penalties"], #penalties-content, .penalties-overview, .penalties-tiers,
+.penalties-badge, .penalties-title, .penalties-desc, #form-penalties, label[for="form-penalties"],
+.form-group:has(#form-penalties), .penalty-points, .penalties-section { display:none !important; }
+@media (max-width: 600px) {
+  body { overflow-x:hidden; }
+  .app-main, main, .view-content { max-width:100%; }
+  .view-content { padding-left:14px !important; padding-right:14px !important; }
+  .view-title { font-size:clamp(1.35rem, 6vw, 1.8rem); }
+  .table-wrapper { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .table-toolbar .table-actions { display:flex; flex-wrap:wrap; gap:8px; }
+  .table-toolbar .btn { flex:1 1 135px; min-height:44px; }
+  .bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+  input, select, textarea, button { max-width:100%; }
+}
+</style>
+
+<style id="mobile-optimization-v2">
+/* Telefonlar uchun qo‘shimcha moslashuv */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; }
+@media (max-width: 600px) {
+  body { min-width: 320px; overflow-x: hidden; }
+  .app-header { position: sticky; top: 0; z-index: 100; }
+  .header-inner { min-height: 58px; }
+  .app-logo { min-width: 0; gap: 7px; }
+  .logo-text { white-space: nowrap; }
+  .header-actions { gap: 6px; }
+  .app-main { width: 100%; margin: 0; padding: 0 0 90px; }
+  .view, .view-content, .view-header { min-width: 0; max-width: 100%; }
+  .view-header { padding-top: 18px; padding-bottom: 14px; }
+  .view-content { padding: 12px !important; }
+  .hero-cards, .stats-bar, .form-grid, .settings-grid, .dashboard-grid, .cards-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .hero-card, .stat-card, .panel, .card, .settings-card { min-width: 0; width: 100%; }
+  .panel, .card { padding: 14px !important; }
+  .form-group, .form-field { min-width: 0; width: 100%; }
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    width: 100%; min-width: 0; min-height: 44px; font-size: 16px !important;
+  }
+  input[type="file"] { padding: 9px; font-size: 14px !important; }
+  button, .btn, .action-btn { min-height: 42px; max-width: 100%; }
+  .table-wrapper { width: 100%; max-width: 100%; overflow-x: auto; }
+  table { min-width: 620px; }
+  .table-toolbar { align-items: stretch; flex-direction: column; gap: 10px; }
+  .table-toolbar .table-actions { width: 100%; display: flex; flex-wrap: wrap; }
+  .table-toolbar .table-actions > * { flex: 1 1 130px; }
+  .modal { padding: 8px; align-items: flex-start; overflow-y: auto; }
+  .modal-content { width: 100% !important; max-width: 100% !important; max-height: calc(100dvh - 16px); margin: 0 !important; border-radius: 16px; overflow-y: auto; }
+  .bottom-nav { left: 0; right: 0; width: 100%; display: flex; justify-content: space-around; gap: 2px; padding: 6px 5px calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .nav-item { flex: 1 1 0; min-width: 0; padding: 7px 2px; font-size: 11px; }
+  .nav-item span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-item i { font-size: 18px; }
+  .toast-container { left: 10px; right: 10px; width: auto; }
+}
+@media (max-width: 380px) {
+  .logo-badge { width: 32px !important; height: 32px !important; }
+  .logo-text { font-size: .88rem !important; }
+  .icon-btn { width: 38px; height: 38px; }
+  .view-title { font-size: 1.25rem !important; }
+  .nav-item { font-size: 10px; }
+}
+</style>
+
+
+<style id="cars-mobile-final-fix">
+/* Mashinalar bo‘limi: telefon ekranlari uchun */
+@media (max-width: 600px) {
+  #view-cars { width:100%; min-width:0; overflow:hidden; }
+  #view-cars .view-header { padding:18px 14px 12px !important; }
+  #view-cars .view-content { padding:12px !important; width:100%; min-width:0; }
+  #view-cars .stats-bar { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px; }
+  #view-cars .stat-card { gap:8px; padding:10px !important; align-items:center; }
+  #view-cars .stat-icon { width:34px; height:34px; font-size:1rem; }
+  #view-cars .stat-label { font-size:.66rem; line-height:1.25; }
+  #view-cars .stat-value { font-size:1rem; overflow-wrap:anywhere; }
+  #view-cars .search-bar { width:100%; min-width:0; }
+  #view-cars .search-bar input { padding-left:40px; font-size:16px !important; }
+  #view-cars .table-toolbar { display:block; width:100%; }
+  #view-cars .table-toolbar .table-actions { display:grid !important; grid-template-columns:1fr !important; gap:8px; width:100%; }
+  #view-cars .table-toolbar .table-actions .btn { width:100%; min-width:0; white-space:normal; padding:11px 10px; }
+  #view-cars .table-wrapper { display:block; width:100%; max-width:100%; overflow-x:auto !important; overflow-y:hidden; border-radius:12px; -webkit-overflow-scrolling:touch; }
+  #view-cars #cars-table { width:100%; min-width:680px; border-collapse:separate; border-spacing:0; }
+  #view-cars #cars-table th, #view-cars #cars-table td { padding:10px 9px; font-size:13px; white-space:normal; vertical-align:middle; }
+  #view-cars #cars-table td button, #view-cars #cars-table td .btn { min-height:38px; margin:2px; }
+  #view-cars .form-grid { grid-template-columns:minmax(0,1fr) !important; }
+  #view-cars .form-field, #view-cars .form-group { min-width:0; width:100%; }
+  #view-cars input, #view-cars select, #view-cars textarea { max-width:100%; }
+}
+@media (max-width: 380px) {
+  #view-cars .stats-bar { grid-template-columns:1fr !important; }
+  #view-cars .stat-card { padding:10px !important; }
+}
+</style>
+
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="#home" class="app-logo" aria-label="Bizda Bor">
+        <div class="logo-badge"><i class="fa-solid fa-car-side" aria-hidden="true"></i></div>
+        <span class="logo-text">
+          <span class="logo-primary">BIZDA</span>
+          <span class="logo-accent">BOR</span>
+        </span>
+      </a>
+
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button type="button" class="icon-btn" id="btn-theme-toggle" title="Tungi / Yorug' rejim">
+          <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+        </button>
+
+        <!-- Supabase Status Badge -->
+        <div class="sync-badge" id="sync-indicator" role="button" tabindex="0" title="Supabase sozlamalarini ko'rish">
+          <span class="sync-dot" id="sync-dot"></span>
+          <span class="sync-text" id="sync-text">Supabase: Ulanmoqda...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main id="main-content" class="app-main" role="main">
+
+    <!-- 1. HOME VIEW (Asosiy) -->
+    <section id="view-home" class="view active" data-view="home">
+      <div class="view-header">
+        <h1 class="view-title">Bizda Bor</h1>
+        <p class="view-subtitle">Avtomobil ijarasini boshqarish tizimi</p>
+      </div>
+
+      <div class="view-content">
+        <!-- Quick Nav Cards -->
+        <div class="hero-cards" role="list">
+          <button type="button" class="hero-card" data-view-target="cars" role="listitem">
+            <div class="hero-card-icon"><i class="fa-solid fa-car-side"></i></div>
+            <div class="hero-card-content">
+              <span class="hero-card-badge">1-Bo'lim</span>
+              <h2 class="hero-card-title">Mashinalar Ro'yxati</h2>
+              <p class="hero-card-desc">Barcha ijaradagi avtomobillar, davlat raqamlari, to'lov sanalari va narxlari</p>
+            </div>
+            <i class="fa-solid fa-chevron-right hero-card-arrow"></i>
+          </button>
+        </div>
+
+        <!-- System & Auto-save Status -->
+        <section class="status-panel">
+          <h3 class="section-title"><i class="fa-solid fa-circle-check" style="color: var(--success);"></i> Tizim va Ma'lumotlar Holati</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <div class="status-icon success"><i class="fa-solid fa-floppy-disk"></i></div>
+              <div class="status-info">
+                <span class="status-label">Avtomatik Saqlash</span>
+                <span class="status-value" id="autosave-status-text">Faol (Auto-save)</span>
+              </div>
+            </div>
+
+            <div class="status-item" id="card-cloud-status" role="button" tabindex="0">
+              <div class="status-icon" id="sync-status-icon"><i class="fa-solid fa-cloud"></i></div>
+              <div class="status-info">
+                <span class="status-label">Supabase Bulut Bazasi</span>
+                <span class="status-value" id="sync-status-text">Ulanmoqda...</span>
+              </div>
+            </div>
+
+            <div class="status-item">
+              <div class="status-icon warning"><i class="fa-solid fa-clock-rotate-left"></i></div>
+              <div class="status-info">
+                <span class="status-label">Oxirgi Saqlanish Vaqti</span>
+                <span class="status-value" id="last-save-time">—</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Hisobotlar asosiy sahifada -->
+                <section class="actions-panel"><h3 class="section-title"><i class="fa-solid fa-chart-column"></i> Hisobotlar</h3>
+          <div class="stats-bar" id="settings-report-stats"></div>
+          <div class="actions-grid">
+            <button type="button" class="action-btn" id="settings-export-csv"><i class="fa-solid fa-file-csv"></i><span>Hisobotni CSV yuklab olish</span></button>
+            <button type="button" class="action-btn" id="settings-backup"><i class="fa-solid fa-shield-halved"></i><span>Zaxira nusxa yaratish (JSON)</span></button>
+            <label class="action-btn" for="settings-import-file"><i class="fa-solid fa-upload"></i><span>Zaxira nusxani tiklash</span><input id="settings-import-file" type="file" accept=".json,application/json" hidden></label>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- 2. CARS VIEW (Mashinalar) -->
+    <section id="view-cars" class="view" data-view="cars">
+      <div class="view-header">
+        <h1 class="view-title">Mashinalar Ro'yxati</h1>
+        <p class="view-subtitle">Ijaradagi va mavjud avtomobillar boshqaruvi</p>
+      </div>
+
+      <div class="view-content">
+        <!-- Stats -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-icon primary"><i class="fa-solid fa-car"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Jami Mashinalar</span>
+              <span class="stat-value" id="stat-total-cars">0</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success"><i class="fa-solid fa-wallet"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Jami Oylik Tushum</span>
+              <span class="stat-value" id="stat-total-revenue">$0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="search-input" placeholder="Model, davlat raqami, mijoz yoki sana bo'yicha qidirish..." autocomplete="off">
+        </div>
+
+        <!-- Toolbar -->
+        <div class="table-toolbar">
+          <div class="table-actions">
+            <button type="button" class="btn secondary" id="btn-export-excel">
+              <i class="fa-solid fa-file-excel" style="color: #10b981;"></i>
+              <span>Excel (.csv)</span>
+            </button>
+            <button type="button" class="btn secondary" id="btn-print-table">
+              <i class="fa-solid fa-print"></i>
+              <span>Chop Etish</span>
+            </button>
+            <button type="button" class="btn primary btn-add-car-highlight" id="btn-open-add-car">
+              <i class="fa-solid fa-plus"></i>
+              <span>Yangi Mashina Qo'shish</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper" tabindex="0">
+          <table class="data-table" id="cars-table">
+            <thead>
+              <tr>
+                <th scope="col" class="col-num">№</th>
+                <th scope="col">Model & Davlat Raqami</th>
+                <th scope="col">Har Oylik Sana</th>
+                <th scope="col" class="col-price">Narx ($)</th>
+                <th scope="col">To'lov Holati</th>
+                <th scope="col" class="col-actions">Amallar</th>
+              </tr>
+            </thead>
+            <tbody id="cars-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS & REPORTS -->
+    <section id="view-settings" class="view" data-view="settings">
+      <div class="view-header"><h1 class="view-title">Sozlamalar va Hisobotlar</h1><p class="view-subtitle">Zaxira nusxalar, o‘chirilgan mashinalar va ijara hisoboti</p></div>
+      <div class="view-content">
+        <section class="actions-panel"><h3 class="section-title"><i class="fa-solid fa-car-side"></i> Mashinalar bo‘limi</h3><p class="view-subtitle">Mashinalar ro‘yxatiga o‘tish va yangi mashina qo‘shish.</p><button type="button" class="btn primary" data-view-target="cars"><i class="fa-solid fa-car"></i> Mashinalarni boshqarish / mashina qo‘shish</button></section>
+        <!-- Ma’lumotlar boshqaruvi endi Sozlamalarda -->
+        <section class="actions-panel">
+          <h3 class="section-title"><i class="fa-solid fa-database"></i> Ma'lumotlar Boshqaruvi va Zaxira</h3>
+          <div class="actions-grid">
+            <button type="button" class="action-btn" id="btn-export-excel-home">
+              <i class="fa-solid fa-file-excel" style="color: #10b981;"></i>
+              <span>Excel (.csv) Eksport</span>
+            </button>
+            <button type="button" class="action-btn" id="btn-export-json">
+              <i class="fa-solid fa-download"></i>
+              <span>JSON Eksport</span>
+            </button>
+            <label class="action-btn" for="json-import-input">
+              <i class="fa-solid fa-upload"></i>
+              <span>JSON Import</span>
+              <input type="file" id="json-import-input" accept=".json" hidden>
+            </label>
+            <button type="button" class="action-btn danger" id="btn-reset-data">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Namunani Tiklash</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="actions-panel"><h3 class="section-title"><i class="fa-solid fa-box-archive"></i> O‘chirilgan mashinalar</h3><p class="view-subtitle">O‘chirilgan mashinalar avval arxivga saqlanadi. Kerak bo‘lsa qayta tiklashingiz mumkin.</p><div id="archived-cars-list"><p>Arxiv bo‘sh.</p></div><button type="button" class="btn danger" id="clear-archive">Arxivni butunlay tozalash</button></section>
+        <section class="actions-panel"><h3 class="section-title"><i class="fa-solid fa-database"></i> Saqlash</h3><p>Sayt ma’lumotlari ushbu brauzerda avtomatik saqlanadi. Kompyuter yoki telefon almashtirganda zaxira nusxa yarating.</p><p id="settings-save-time">Oxirgi saqlanish: —</p></section>
+      </div>
+    </section>
+
+    <!-- 4. DETAIL VIEW (Batafsil) -->
+    <section id="view-detail" class="view" data-view="detail">
+      <div class="view-header">
+        <div class="view-title-row">
+          <button type="button" class="back-btn" id="btn-back-from-detail" aria-label="Orqaga">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <div>
+            <h1 class="view-title">Batafsil Ma'lumot</h1>
+            <p class="view-subtitle">Avtomobil shartnomasi va haydovchi tafsilotlari</p>
+          </div>
+        </div>
+      </div>
+      <div class="view-content" id="detail-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR (Telegram / Instagram UX) -->
+  <nav class="bottom-nav" role="navigation" id="bottom-nav">
+    <button type="button" class="nav-item active" data-view="home">
+      <i class="fa-solid fa-house"></i>
+      <span>Asosiy</span>
+    </button>
+    <button type="button" class="nav-item" data-view="cars">
+      <i class="fa-solid fa-car"></i>
+      <span>Mashinalar</span>
+    </button>
+    <button type="button" class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i><span>Sozlamalar</span></button>
+  </nav>
+
+  <!-- APP FOOTER -->
+  <footer class="app-footer">
+    <p>BIZDA BOR — Avto Arenda boshqaruvi</p>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. CAR MODAL -->
+  <dialog id="car-modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close-modal="car-modal"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-car-title" class="modal-title">Yangi Mashina Qo'shish</h2>
+        <button type="button" class="modal-close" data-close-modal="car-modal"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <form id="car-form" class="modal-form" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="form-name">Mashina Modeli <span class="required">*</span></label>
+            <input type="text" id="form-name" name="name" required placeholder="Masalan: MATIZ, SPARK, BYD" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label for="form-plate">Davlat Raqami <span class="required">*</span></label>
+            <input type="text" id="form-plate" name="plate" required placeholder="Masalan: 01 A789YY yoki A877BD" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label for="form-short-date">Har Oylik To'lov Sanasi <span class="required">*</span></label>
+            <input type="text" id="form-short-date" name="shortDate" required placeholder="Masalan: 25 sana" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label for="form-price">To'lov Narxi ($) <span class="required">*</span></label>
+            <input type="text" id="form-price" name="price" required placeholder="Masalan: 500$" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label for="form-customer">Mijoz Ismi <span class="required">*</span></label>
+            <input type="text" id="form-customer" name="customer" required placeholder="Masalan: Jalol" autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="form-taken-date">Ijara Olgan Sanasi</label>
+            <input type="text" id="form-taken-date" name="takenDate" placeholder="Masalan: 25.01.2026" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label for="form-phone">Telefon Raqami <span class="required">*</span></label>
+            <input type="tel" id="form-phone" name="phone" required placeholder="+998(33)407-55-55" autocomplete="tel">
+          </div>
+          <div class="form-field">
+            <label for="form-receipt-image">Tilxat rasmi</label>
+            <input type="file" id="form-receipt-image" accept="image/*" capture="environment">
+            <small style="color:var(--text-muted)">Tilxat rasmini telefoningizdan tanlang yoki suratga oling.</small>
+            <img id="receipt-image-preview" alt="Tilxat rasmi ko‘rinishi" style="display:none;width:100%;max-height:140px;object-fit:contain;margin-top:8px;border-radius:10px;border:1px solid var(--border-color)">
+          </div>
+        </div>
+        <div class="form-field full-width">
+          <label for="form-notes">Qo'shimcha Eslatma / Shartlar</label>
+          <textarea id="form-notes" name="notes" rows="2" placeholder="Ijara shartnomasi yoki mashina holati haqida izoh..."></textarea>
+        </div>
+        <footer class="modal-footer">
+          <button type="button" class="btn secondary" data-close-modal="car-modal">Bekor qilish</button>
+          <button type="submit" class="btn primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
+        </footer>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 2. DELETE CONFIRM MODAL -->
+  <dialog id="delete-modal" class="modal" role="alertdialog">
+    <div class="modal-backdrop" data-close-modal="delete-modal"></div>
+    <div class="modal-content modal-small">
+      <div class="status-icon warning" style="margin: 0 auto 14px auto;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3 class="modal-title">Mashinani o'chirish</h3>
+      <p id="delete-modal-msg" class="modal-subtitle" style="margin: 10px 0 18px 0;">Haqiqatan ham o'chirmoqchimisiz?</p>
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" class="btn secondary" data-close-modal="delete-modal">Bekor qilish</button>
+        <button type="button" class="btn danger" id="btn-confirm-delete"><i class="fa-solid fa-trash-can"></i> O'chirish</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 3. SUPABASE SETTINGS MODAL -->
+  <dialog id="supabase-modal" class="modal" role="dialog">
+    <div class="modal-backdrop" data-close-modal="supabase-modal"></div>
+    <div class="modal-content modal-wide">
+      <header class="modal-header">
+        <div>
+          <h2 class="modal-title"><i class="fa-solid fa-cloud" style="color: var(--success);"></i> Supabase Bulutli Baza</h2>
+          <p class="modal-subtitle">Barcha telefon va kompyuterlar orasida real vaqtda sinxronlash</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="supabase-modal"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <form id="supabase-form" class="modal-form">
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="supabase-url-input">Supabase Project URL</label>
+          <input type="url" id="supabase-url-input" name="url" required autocomplete="url">
+        </div>
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="supabase-key-input">Supabase Anon Public API Key</label>
+          <input type="text" id="supabase-key-input" name="key" required autocomplete="off">
+        </div>
+        <footer class="modal-footer">
+          <button type="button" class="btn secondary" data-close-modal="supabase-modal">Yopish</button>
+          <button type="submit" class="btn success"><i class="fa-solid fa-link"></i> Saqlash va Ulanish</button>
+        </footer>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- PRINT SECTION -->
+  <div id="print-section" class="print-section" aria-hidden="true"></div>
+
+  <!-- ==========================================================================
+       ALL-IN-ONE JAVASCRIPT ENGINE
+       ========================================================================== -->
+  <script>
+    /* 1. SUPABASE CONFIGURATION */
+    const SUPABASE_STORAGE_URL_KEY = 'bizdabor_supabase_url';
+    const SUPABASE_STORAGE_KEY_KEY = 'bizdabor_supabase_key';
+    const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3c2duaHlsa29iZHd1eG14anhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNDEyNzAsImV4cCI6MjEwNzkxNzI3MH0.rcYZFn72EP2ECycAsIMuJZVF3jtnLh7lZYenW3X0o4g';
+    const DEFAULT_SUPABASE_URL = 'https://fwsgnhylkobdwuxmxjxd.supabase.co';
+
+    const SupabaseConfig = {
+      clientInstance: null,
+      getUrl() {
+        const stored = localStorage.getItem(SUPABASE_STORAGE_URL_KEY);
+        return (stored && stored.trim().startsWith('http')) ? stored.trim() : DEFAULT_SUPABASE_URL;
+      },
+      getKey() {
+        const stored = localStorage.getItem(SUPABASE_STORAGE_KEY_KEY);
+        return (stored && stored.trim().length > 30) ? stored.trim() : DEFAULT_SUPABASE_KEY;
+      },
+      setCredentials(url, key) {
+        if (url && url.trim().startsWith('http')) localStorage.setItem(SUPABASE_STORAGE_URL_KEY, url.trim().replace(/\/$/, ''));
+        if (key && key.trim().length > 30) localStorage.setItem(SUPABASE_STORAGE_KEY_KEY, key.trim());
+        this.clientInstance = null;
+      },
+      initClient() {
+        if (!window.supabase) return null;
+        const url = this.getUrl();
+        const key = this.getKey();
+        if (!url || !key) return null;
+        try {
+          this.clientInstance = window.supabase.createClient(url, key, {
+            auth: { persistSession: false },
+            realtime: { params: { eventsPerSecond: 10 } }
+          });
+          return this.clientInstance;
+        } catch (e) {
+          console.error("Supabase client xatosi:", e);
+          return null;
+        }
+      },
+      getClient() {
+        if (!this.clientInstance) return this.initClient();
+        return this.clientInstance;
+      }
+    };
+    window.SupabaseConfig = SupabaseConfig;
+
+    /* 2. DATA STORE & REAL-TIME ENGINE */
+    const STORAGE_KEY = 'bizdabor_cars_data_v1';
+    const LAST_SAVED_KEY = 'bizdabor_last_saved_time';
+    const DEFAULT_CARS = [
+      { id: 1, name: "MATIZ", plate: "A877BD", shortDate: "25 sana", price: "500$", customer: "Jalol", takenDate: "25.01.2026", phone: "+998(33)407-55-55", penaltyPoints: 2, status: "Faol", paid: false, notes: "Ijara to'lovlari har oyning 25-sanasida." },
+      { id: 2, name: "SPARK", plate: "B671AB", shortDate: "27 sana", price: "1000$", customer: "Eldor", takenDate: "27.01.2026", phone: "+998(90)123-45-67", penaltyPoints: 0, status: "Faol", paid: false, notes: "Har oyning 27-sanasida to'lov." },
+      { id: 3, name: "BYD SONG PLUS", plate: "QZ765B", shortDate: "10 sana", price: "700$", customer: "Sardor", takenDate: "10.02.2026", phone: "+998(93)555-12-34", penaltyPoints: 3, status: "Faol", paid: false, notes: "Elektr avtomobil." },
+      { id: 4, name: "BYD CHAZOR", plate: "GA672B", shortDate: "11 sana", price: "600$", customer: "Otabek", takenDate: "11.02.2026", phone: "+998(97)777-88-99", penaltyPoints: 1, status: "Faol", paid: false, notes: "Gibrid model." }
+    ];
+
+    class DataStore {
+      constructor() {
+        this.cars = [];
+        this.lastSaved = null;
+        this.saveListeners = new Set();
+        this.realtimeChannel = null;
+        this.cloudStatus = 'local';
+        this.supabasePaidColumn = null;
+        this.loadLocalCache();
+      }
+
+      parsePaid(val) {
+        if (val === true) return true;
+        if (!val) return false;
+        const text = String(val).trim().toLowerCase();
+        return text === 'true' || text === '1' || text === 'tolandi' || text === "to'landi";
+      }
+
+      extractCleanNotes(notes) {
+        if (!notes) return '';
+        return String(notes).replace(/\[PAID:(true|false)\]/gi, '').trim();
+      }
+
+      attachPaidToNotes(notes, isPaid) {
+        const clean = this.extractCleanNotes(notes);
+        const tag = `[PAID:${Boolean(isPaid)}]`;
+        return clean ? `${clean}\n${tag}` : tag;
+      }
+
+      parsePaidFromRow(row) {
+        if (row.paid !== undefined && row.paid !== null && row.paid !== '') {
+          return this.parsePaid(row.paid);
+        }
+        const rawNotes = String(row.notes || '');
+        if (/\[PAID:true\]/i.test(rawNotes)) return true;
+        if (/\[PAID:false\]/i.test(rawNotes)) return false;
+        const local = this.cars.find(c => c.id === Number(row.id));
+        return local ? Boolean(local.paid) : false;
+      }
+
+      fromSupabase(row) {
+        // The current Supabase table may not have image columns. Preserve images
+        // from this browser's local cache when cloud rows are refreshed.
+        const local = (this.cars || []).find(c => Number(c.id) === Number(row.id))
+          || (this.cars || []).find(c => String(c.plate || '').trim().toUpperCase() === String(row.plate || '').trim().toUpperCase());
+        return {
+          id: Number(row.id),
+          name: (row.name || '').trim().toUpperCase(),
+          plate: (row.plate || '').trim().toUpperCase(),
+          shortDate: (row.short_date || row.shortDate || '').trim(),
+          price: (row.price || '').trim(),
+          customer: (row.customer || '').trim(),
+          takenDate: (row.taken_date || row.takenDate || '').trim(),
+          phone: (row.phone || '').trim(),
+          penaltyPoints: parseInt(row.penalty_points !== undefined ? row.penalty_points : row.penaltyPoints, 10) || 0,
+          status: row.status || 'Faol',
+          paid: this.parsePaidFromRow(row),
+          notes: this.extractCleanNotes(row.notes),
+          receiptImage: row.receipt_image || row.receiptImage || (local && local.receiptImage) || '',
+          carImage: row.car_image || row.carImage || (local && local.carImage) || ''
+        };
+      }
+
+      toSupabase(carData) {
+        const cleanNotes = this.extractCleanNotes(carData.notes);
+        const payload = {
+          name: (carData.name || '').trim().toUpperCase(),
+          plate: (carData.plate || '').trim().toUpperCase(),
+          short_date: (carData.shortDate || '').trim(),
+          price: (carData.price || '').trim(),
+          customer: (carData.customer || '').trim(),
+          taken_date: (carData.takenDate || '').trim(),
+          phone: (carData.phone || '').trim(),
+          penalty_points: parseInt(carData.penaltyPoints, 10) || 0,
+          status: carData.status || 'Faol'
+        };
+
+        if (this.supabasePaidColumn === true) {
+          payload.paid = Boolean(carData.paid);
+          payload.notes = cleanNotes;
+        } else {
+          payload.notes = this.attachPaidToNotes(cleanNotes, Boolean(carData.paid));
+        }
+        return payload;
+      }
+
+      loadLocalCache() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              this.cars = parsed.map(c => ({
+                ...c,
+                paid: this.parsePaid(c.paid),
+                notes: this.extractCleanNotes(c.notes)
+              }));
+              this.lastSaved = localStorage.getItem(LAST_SAVED_KEY) || this.formatCurrentTime();
+              return;
+            }
+          }
+        } catch (e) { console.warn(e); }
+        this.cars = JSON.parse(JSON.stringify(DEFAULT_CARS));
+        this.saveToLocal();
+      }
+
+      formatCurrentTime() {
+        const now = new Date();
+        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      }
+
+      onSave(callback) {
+        if (typeof callback === 'function') this.saveListeners.add(callback);
+      }
+
+      notifySave(timeStr) {
+        this.saveListeners.forEach(cb => { try { cb(timeStr); } catch (e) {} });
+      }
+
+      saveToLocal() {
+        const timeStr = this.formatCurrentTime();
+        this.lastSaved = timeStr;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.cars));
+          localStorage.setItem(LAST_SAVED_KEY, timeStr);
+        } catch (e) {
+          console.error('Local saqlash xatosi:', e);
+          if (window.UI && typeof window.UI.showToast === 'function') {
+            window.UI.showToast('Brauzer xotirasi to‘ldi: rasm saqlanmadi. Eski yozuvlarni/zaxira nusxani tekshiring.', 'warning');
+          }
+        }
+        this.notifySave(timeStr);
+      }
+
+      getSupabaseClient() {
+        return window.SupabaseConfig.getClient();
+      }
+
+      async fetchFromSupabase() {
+        const supabase = this.getSupabaseClient();
+        if (!supabase) {
+          this.cloudStatus = 'local';
+          this.updateCloudStatusBadge();
+          return this.cars;
+        }
+
+        this.cloudStatus = 'connecting';
+        this.updateCloudStatusBadge();
+
+        try {
+          const { data, error } = await supabase.from('cars').select('*').order('id', { ascending: false });
+          if (error) {
+            this.cloudStatus = 'error';
+            this.updateCloudStatusBadge(error.message);
+            return this.cars;
+          }
+
+          if (Array.isArray(data)) {
+            if (data.length > 0) {
+              this.supabasePaidColumn = ('paid' in data[0]);
+              this.cars = data.map(r => this.fromSupabase(r));
+            } else {
+              this.supabasePaidColumn = false;
+              await this.syncLocalCarsToSupabase();
+            }
+          }
+
+          this.cloudStatus = 'connected';
+          this.saveToLocal();
+          this.updateCloudStatusBadge();
+          this.initRealtimeSubscription();
+
+          if (window.app) window.app.renderCurrentView();
+          return this.cars;
+        } catch (err) {
+          this.cloudStatus = 'error';
+          this.updateCloudStatusBadge();
+          return this.cars;
+        }
+      }
+
+      async syncLocalCarsToSupabase() {
+        const supabase = this.getSupabaseClient();
+        if (!supabase || this.cars.length === 0) return;
+        try {
+          const rows = this.cars.map(c => this.toSupabase(c));
+          const { data, error } = await supabase.from('cars').insert(rows).select();
+          if (!error && Array.isArray(data)) {
+            data.forEach((row, idx) => { if (this.cars[idx]) this.cars[idx].id = row.id; });
+            this.saveToLocal();
+          }
+        } catch (e) {}
+      }
+
+      async add(carData) {
+        const maxId = this.cars.length > 0 ? Math.max(...this.cars.map(c => Number(c.id) || 0)) : 0;
+        const newCar = {
+          id: maxId + 1,
+          name: (carData.name || '').trim().toUpperCase(),
+          plate: (carData.plate || '').trim().toUpperCase(),
+          shortDate: (carData.shortDate || '').trim(),
+          price: (carData.price || '').trim(),
+          customer: (carData.customer || '').trim(),
+          takenDate: (carData.takenDate || '').trim(),
+          phone: (carData.phone || '').trim(),
+          penaltyPoints: parseInt(carData.penaltyPoints, 10) || 0,
+          status: carData.status || "Faol",
+          paid: this.parsePaid(carData.paid),
+          notes: this.extractCleanNotes(carData.notes),
+          receiptImage: carData.receiptImage || ''
+        };
+
+        this.cars.unshift(newCar);
+        this.saveToLocal();
+
+        const supabase = this.getSupabaseClient();
+        if (supabase) {
+          try {
+            const payload = this.toSupabase(newCar);
+            const { data } = await supabase.from('cars').insert([payload]).select();
+            if (data && data[0]) {
+              newCar.id = data[0].id;
+              this.saveToLocal();
+              this.cloudStatus = 'connected';
+              this.updateCloudStatusBadge();
+            }
+          } catch (e) {}
+        }
+        return newCar;
+      }
+
+      async update(id, updatedFields) {
+        const numericId = Number(id);
+        const idx = this.cars.findIndex(c => c.id === numericId);
+        if (idx === -1) return null;
+
+        const current = this.cars[idx];
+        const newPaid = updatedFields.paid !== undefined ? this.parsePaid(updatedFields.paid) : current.paid;
+        const newNotes = updatedFields.notes !== undefined ? this.extractCleanNotes(updatedFields.notes) : current.notes;
+
+        this.cars[idx] = {
+          ...current,
+          ...updatedFields,
+          id: numericId,
+          name: (updatedFields.name || current.name).trim().toUpperCase(),
+          plate: (updatedFields.plate || current.plate).trim().toUpperCase(),
+          penaltyPoints: parseInt(updatedFields.penaltyPoints !== undefined ? updatedFields.penaltyPoints : current.penaltyPoints, 10) || 0,
+          paid: newPaid,
+          notes: newNotes
+        };
+
+        this.saveToLocal();
+
+        const supabase = this.getSupabaseClient();
+        if (supabase) {
+          try {
+            const payload = this.toSupabase(this.cars[idx]);
+            await supabase.from('cars').update(payload).eq('id', numericId);
+            this.cloudStatus = 'connected';
+            this.updateCloudStatusBadge();
+          } catch (e) {}
+        }
+        return this.cars[idx];
+      }
+
+      async setPaidStatus(id, paid) {
+        return await this.update(id, { paid: this.parsePaid(paid) });
+      }
+
+      async delete(id) {
+        const numericId = Number(id);
+        this.cars = this.cars.filter(c => c.id !== numericId);
+        this.saveToLocal();
+
+        const supabase = this.getSupabaseClient();
+        if (supabase) {
+          try { await supabase.from('cars').delete().eq('id', numericId); } catch (e) {}
+        }
+        return true;
+      }
+
+      async updatePenaltyPoints(id, delta) {
+        const car = this.getById(id);
+        if (car) {
+          const current = car.penaltyPoints || 0;
+          const updated = Math.max(0, Math.min(12, current + delta));
+          return await this.update(id, { penaltyPoints: updated });
+        }
+        return null;
+      }
+
+      initRealtimeSubscription() {
+        const supabase = this.getSupabaseClient();
+        if (!supabase) return;
+        if (this.realtimeChannel) {
+          try { supabase.removeChannel(this.realtimeChannel); } catch (e) {}
+        }
+        try {
+          this.realtimeChannel = supabase
+            .channel('public:cars')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'cars' }, (payload) => {
+              this.handleRealtimeEvent(payload);
+            })
+            .subscribe((status) => {
+              if (status === 'SUBSCRIBED') {
+                this.cloudStatus = 'connected';
+                this.updateCloudStatusBadge();
+              }
+            });
+        } catch (e) {}
+      }
+
+      handleRealtimeEvent(payload) {
+        const eventType = payload.eventType;
+        if (eventType === 'INSERT' && payload.new) {
+          const incoming = this.fromSupabase(payload.new);
+          if (!this.cars.some(c => c.id === incoming.id)) {
+            this.cars.unshift(incoming);
+            this.saveToLocal();
+            if (window.UI) window.UI.showToast(`Boshqa qurilmadan qo'shildi: ${incoming.name}`, 'info', 2000);
+          }
+        } else if (eventType === 'UPDATE' && payload.new) {
+          const incoming = this.fromSupabase(payload.new);
+          const idx = this.cars.findIndex(c => c.id === incoming.id);
+          if (idx !== -1) {
+            this.cars[idx] = incoming;
+            this.saveToLocal();
+          }
+        } else if (eventType === 'DELETE' && payload.old) {
+          this.cars = this.cars.filter(c => c.id !== Number(payload.old.id));
+          this.saveToLocal();
+        }
+        if (window.app) window.app.renderCurrentView();
+      }
+
+      updateCloudStatusBadge() {
+        const dot = document.getElementById('sync-dot');
+        const text = document.getElementById('sync-text');
+        const syncStatusText = document.getElementById('sync-status-text');
+        const syncStatusIcon = document.getElementById('sync-status-icon');
+
+        if (this.cloudStatus === 'connected') {
+          if (dot) dot.className = 'sync-dot connected';
+          if (text) text.textContent = 'Supabase: Ulangan (Jonli)';
+          if (syncStatusText) syncStatusText.textContent = 'Ulangan (Jonli)';
+          if (syncStatusIcon) syncStatusIcon.className = 'status-icon success';
+        } else if (this.cloudStatus === 'connecting') {
+          if (dot) dot.className = 'sync-dot connecting';
+          if (text) text.textContent = 'Supabase: Ulanmoqda...';
+          if (syncStatusText) syncStatusText.textContent = 'Ulanmoqda...';
+          if (syncStatusIcon) syncStatusIcon.className = 'status-icon warning';
+        } else if (this.cloudStatus === 'error') {
+          if (dot) dot.className = 'sync-dot error';
+          if (text) text.textContent = 'Supabase: Xatolik';
+          if (syncStatusText) syncStatusText.textContent = 'Xatolik';
+          if (syncStatusIcon) syncStatusIcon.className = 'status-icon danger';
+        } else {
+          if (dot) dot.className = 'sync-dot';
+          if (text) text.textContent = 'Supabase: Lokal';
+          if (syncStatusText) syncStatusText.textContent = 'Lokal rejim';
+          if (syncStatusIcon) syncStatusIcon.className = 'status-icon';
+        }
+      }
+
+      getAll() { return this.cars; }
+      getById(id) { return this.cars.find(c => c.id === Number(id)) || null; }
+
+      exportJSON() {
+        const blob = new Blob([JSON.stringify(this.cars, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bizda-bor-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      exportExcelCSV() {
+        let csv = "\uFEFF№;MASHINA MODELI;DAVLAT RAQAMI;MIJOZ;TELEFON;OLGAN SANA;TO'LOV KUNI;NARXI;TO'LOV HOLATI;IZOH\n";
+        let total = 0;
+        this.cars.forEach((c, idx) => {
+          total += (parseInt((c.price || '').replace(/[^0-9]/g, ''), 10) || 0);
+          csv += `${idx + 1};"${c.name}";"${c.plate}";"${c.customer}";"${c.phone}";"${c.takenDate}";"${c.shortDate}";"${c.price}";"${c.paid ? "To'landi" : "To'lanmadi"}";"${c.notes}"\n`;
+        });
+        csv += `;"JAMI TUSHUM:";"";"";"";"";"";"$${total}";"${this.cars.length} ta mashina";"";""\n`;
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bizda-bor-excel-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      importJSON(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return reject(new Error("Fayl tanlanmagan!"));
+          const r = new FileReader();
+          r.onload = (e) => {
+            try {
+              const parsed = JSON.parse(e.target.result);
+              if (!Array.isArray(parsed)) throw new Error("Format xato");
+              this.cars = parsed.map((item, idx) => ({
+                id: item.id || (idx + 1),
+                name: (item.name || "Noma'lum").trim().toUpperCase(),
+                plate: (item.plate || "01 A000AA").trim().toUpperCase(),
+                shortDate: (item.shortDate || "").trim(),
+                price: (item.price || "0$").trim(),
+                customer: (item.customer || "Noma'lum").trim(),
+                takenDate: (item.takenDate || "").trim(),
+                phone: (item.phone || "").trim(),
+                penaltyPoints: parseInt(item.penaltyPoints, 10) || 0,
+                status: item.status || "Faol",
+                paid: this.parsePaid(item.paid),
+                notes: this.extractCleanNotes(item.notes)
+              }));
+              this.saveToLocal();
+              this.syncLocalCarsToSupabase();
+              resolve(this.cars);
+            } catch (err) { reject(err); }
+          };
+          r.readAsText(file);
+        });
+      }
+
+      resetToDefault() {
+        this.cars = JSON.parse(JSON.stringify(DEFAULT_CARS));
+        this.saveToLocal();
+        this.syncLocalCarsToSupabase();
+        return this.cars;
+      }
+    }
+    window.store = new DataStore();
+
+    /* 3. UI RENDERING ENGINE */
+    const UI = {
+      showToast(msg, type = 'success', duration = 2500) {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
+        t.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${msg}</span>`;
+        c.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        setTimeout(() => {
+          t.classList.remove('show');
+          setTimeout(() => t.remove(), 250);
+        }, duration);
+      },
+
+      updateAutoSaveStatus(timeStr) {
+        const el = document.getElementById('last-save-time');
+        const auto = document.getElementById('autosave-status-text');
+        if (el) el.textContent = timeStr || '—';
+        if (auto) auto.textContent = `Faol (${timeStr})`;
+      },
+
+      renderPlate(plateText, isLarge = false) {
+        if (!plateText) return '';
+        const clean = plateText.trim();
+        const match = clean.match(/^(\d{2})\s*(.*)$/);
+        let region = "01";
+        let body = clean;
+        if (match) {
+          region = match[1];
+          body = match[2];
+        }
+        return `
+          <div class="uz-plate ${isLarge ? 'uz-plate-lg' : ''}">
+            <span class="uz-plate-region">${region}</span>
+            <span>${body || region}</span>
+            <div class="uz-plate-flag">
+              <div class="uz-plate-flag-stripes"></div>
+              <span>UZ</span>
+            </div>
+          </div>
+        `;
+      },
+
+      renderStats() {
+        const cars = window.store.getAll();
+        let totalRev = 0;
+        let penCount = 0;
+        cars.forEach(c => {
+          totalRev += (parseInt((c.price || '').replace(/[^0-9]/g, ''), 10) || 0);
+          if ((c.penaltyPoints || 0) > 0) penCount++;
+        });
+        const elTot = document.getElementById('stat-total-cars');
+        const elRev = document.getElementById('stat-total-revenue');
+        const elPen = document.getElementById('stat-total-penalties');
+        if (elTot) elTot.textContent = cars.length;
+        if (elRev) elRev.textContent = `$${totalRev.toLocaleString()}`;
+        if (elPen) elPen.textContent = penCount;
+      },
+
+      renderCarsTable(carsToRender = null) {
+        const tbody = document.getElementById('cars-tbody');
+        if (!tbody) return;
+        const cars = carsToRender !== null ? carsToRender : window.store.getAll();
+        this.renderStats();
+
+        if (cars.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty-state">
+                <i class="fa-solid fa-car-side"></i>
+                <p>Mashinalar topilmadi</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = cars.map((car, idx) => {
+          const isPaid = Boolean(car.paid);
+
+          return `
+            <tr data-car-id="${car.id}">
+              <td class="col-num" style="font-weight: 800; color: var(--text-muted); font-family: var(--font-mono);">${idx + 1}</td>
+              <td>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
+                    <strong style="color: var(--text-main); font-size: 0.95rem;">${car.name}</strong>
+                    ${this.renderPlate(car.plate)}
+                  </div>
+                  ${car.receiptImage ? `<img src="${car.receiptImage}" alt="${car.name} tilxat rasmi" style="width:76px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border-color);margin:4px 0;cursor:pointer" data-action="view-detail" data-id="${car.id}">` : ''}
+                  <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <span><i class="fa-regular fa-user" style="color: var(--accent);"></i> ${car.customer || '—'}</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-phone"></i> ${car.phone || '—'}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--radius-full); background: var(--bg-muted); font-size: 0.78rem; font-weight: 700;">
+                  <i class="fa-regular fa-calendar-days" style="color: var(--primary);"></i>
+                  ${car.shortDate || '—'}
+                </span>
+              </td>
+              <td class="col-price">
+                <strong style="font-size: 1rem; color: var(--success); font-family: var(--font-mono);">${car.price}</strong>
+              </td>
+              <td>
+                <div class="payment-toggle-group" data-stop-propagation="true">
+                  <button type="button" class="pay-btn ${isPaid ? 'paid-active' : 'paid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="true">
+                    <i class="fa-solid fa-check"></i> Tolandi
+                  </button>
+                  <button type="button" class="pay-btn ${!isPaid ? 'unpaid-active' : 'unpaid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="false">
+                    <i class="fa-solid fa-xmark"></i> Tolanmadi
+                  </button>
+                </div>
+              </td>
+              <td class="col-actions">
+                <div class="row-actions" data-stop-propagation="true">
+                  <button type="button" class="action-icon-btn" data-action="view-detail" data-id="${car.id}" title="Batafsil"><i class="fa-solid fa-eye"></i></button>
+                  <button type="button" class="action-icon-btn edit" data-action="edit-car" data-id="${car.id}" title="Tahrirlash"><i class="fa-solid fa-pen-to-square"></i></button>
+                  <button type="button" class="action-icon-btn delete" data-action="delete-car" data-id="${car.id}" title="O'chirish"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      },
+
+      renderPenaltiesView() {
+        const c = document.getElementById('penalties-content');
+        if (!c) return;
+        const cars = window.store.getAll();
+        const safe = cars.filter(x => (x.penaltyPoints || 0) <= 4);
+        const warn = cars.filter(x => (x.penaltyPoints || 0) >= 5 && (x.penaltyPoints || 0) <= 8);
+        const dang = cars.filter(x => (x.penaltyPoints || 0) >= 9);
+
+        c.innerHTML = `
+          <div class="penalties-overview">
+            <div class="penalties-badge"><i class="fa-solid fa-shield-halved"></i> 12-Ballik Tizim Nazorati</div>
+            <h2 class="penalties-title">Haydovchilar Jarima Ballari Monitoringi</h2>
+            <p class="penalties-desc">O'zbekiston Respublikasi YPX 12 ballik me'yori. 12 ball to'plansa haydovchilik huquqi to'xtatiladi.</p>
+            <div class="penalties-tiers">
+              <div class="tier-card safe"><span class="tier-name">Xavfsiz (0-4)</span><span class="tier-count">${safe.length}</span></div>
+              <div class="tier-card warning"><span class="tier-name">Ogohlantirish (5-8)</span><span class="tier-count">${warn.length}</span></div>
+              <div class="tier-card danger"><span class="tier-name">Xavfli (9-12)</span><span class="tier-count">${dang.length}</span></div>
+            </div>
+          </div>
+
+          <div class="table-wrapper" tabindex="0">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th scope="col" class="col-num">№</th>
+                  <th scope="col">Model & Raqam</th>
+                  <th scope="col">Mijoz</th>
+                  <th scope="col" style="text-align: center;">Ball</th>
+                  <th scope="col">Holat</th>
+                  <th scope="col" class="col-actions">Ballni O'zgartirish</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${cars.map((car, idx) => {
+                  const pts = car.penaltyPoints || 0;
+                  return `
+                    <tr>
+                      <td class="col-num" style="font-weight: 800; color: var(--text-muted); font-family: var(--font-mono);">${idx + 1}</td>
+                      <td>
+                        <strong style="color: var(--text-main); font-size: 0.95rem;">${car.name}</strong>
+                        <div>${this.renderPlate(car.plate)}</div>
+                      </td>
+                      <td>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 0.88rem;">${car.customer || '—'}</div>
+                        <a href="tel:${(car.phone || '').replace(/[^0-9+]/g, '')}" style="font-size: 0.75rem; color: var(--primary);">
+                          <i class="fa-solid fa-phone"></i> ${car.phone || '—'}
+                        </a>
+                      </td>
+                      <td style="text-align: center;">
+                        <strong style="font-size: 1.3rem; font-family: var(--font-mono); color: ${pts >= 9 ? 'var(--danger)' : pts >= 5 ? 'var(--warning)' : 'var(--text-main)'};">${pts}</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">/12</span>
+                      </td>
+                      <td>
+                        <span style="display: inline-block; padding: 4px 8px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 800; background: ${pts >= 9 ? 'var(--danger-light)' : pts >= 5 ? 'var(--warning-light)' : 'var(--success-light)'}; color: ${pts >= 9 ? 'var(--danger)' : pts >= 5 ? 'var(--warning)' : 'var(--success)'};">
+                          ${pts >= 9 ? 'Xavfli' : pts >= 5 ? 'Ogohlantirish' : 'Xavfsiz'}
+                        </span>
+                      </td>
+                      <td class="col-actions">
+                        <div class="penalty-stepper">
+                          <button type="button" class="step-btn" data-action="adjust-penalty" data-id="${car.id}" data-delta="-1"><i class="fa-solid fa-minus"></i></button>
+                          <button type="button" class="step-btn plus" data-action="adjust-penalty" data-id="${car.id}" data-delta="1"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      renderDetail(carId) {
+        const c = document.getElementById('detail-content');
+        if (!c) return;
+        const car = window.store.getById(carId);
+        if (!car) {
+          c.innerHTML = `<div class="empty-state"><p>Mashina topilmadi!</p></div>`;
+          return;
+        }
+
+        const isPaid = Boolean(car.paid);
+        const pts = car.penaltyPoints || 0;
+        const cleanPhone = (car.phone || '').replace(/[^0-9+]/g, '');
+
+        c.innerHTML = `
+          <!-- Banner -->
+          <div class="detail-banner">
+            <div>
+              <span class="hero-card-badge" style="background: rgba(255,255,255,0.2); color: #fff; margin-bottom: 6px;">
+                Holati: ${car.status || 'Faol'}
+              </span>
+              <h2 style="font-size: 2rem; font-weight: 900; line-height: 1.1;">${car.name}</h2>
+              
+              <!-- To'lov holati boshqaruvi -->
+              <div class="detail-payment-box">
+                <span class="detail-payment-badge ${isPaid ? 'paid' : 'unpaid'}">
+                  <i class="fa-solid ${isPaid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+                  ${isPaid ? "To'langan (Qarzdorlik yo'q)" : "To'lanmagan (Qarzdorlik mavjud)"}
+                </span>
+                <div class="payment-toggle-group">
+                  <button type="button" class="pay-btn ${isPaid ? 'paid-active' : 'paid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="true">
+                    <i class="fa-solid fa-check"></i> Tolandi
+                  </button>
+                  <button type="button" class="pay-btn ${!isPaid ? 'unpaid-active' : 'unpaid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="false">
+                    <i class="fa-solid fa-xmark"></i> Tolanmadi
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              ${this.renderPlate(car.plate, true)}
+            </div>
+          </div>
+
+          <!-- Grid -->
+          <div class="detail-grid">
+            <div class="detail-card">
+              <h3 class="detail-card-title"><i class="fa-solid fa-id-card" style="color: var(--accent);"></i> Mijoz va Ijara Shartnomasi</h3>
+              <div class="detail-list">
+                <div class="detail-row">
+                  <span class="detail-label"><i class="fa-regular fa-user"></i> Mijoz:</span>
+                  <span class="detail-value">${car.customer || '—'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label"><i class="fa-solid fa-dollar-sign" style="color: var(--success);"></i> Oylik Narxi:</span>
+                  <span class="detail-value" style="color: var(--success); font-size: 1.1rem; font-family: var(--font-mono);">${car.price}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label"><i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> To'lov Kuni:</span>
+                  <span class="detail-value">${car.shortDate || '—'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label"><i class="fa-solid fa-wallet" style="color: var(--success);"></i> To'lov Holati:</span>
+                  <div class="payment-toggle-group">
+                    <button type="button" class="pay-btn ${isPaid ? 'paid-active' : 'paid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="true">Tolandi</button>
+                    <button type="button" class="pay-btn ${!isPaid ? 'unpaid-active' : 'unpaid-inactive'}" data-action="set-paid" data-id="${car.id}" data-value="false">Tolanmadi</button>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label"><i class="fa-regular fa-calendar"></i> Olgan Sana:</span>
+                  <span class="detail-value">${car.takenDate || '—'}</span>
+                </div>
+                <div class="detail-row" style="border-bottom: none;">
+                  <span class="detail-label"><i class="fa-solid fa-phone" style="color: var(--accent);"></i> Telefon:</span>
+                  <div class="contact-actions">
+                    <a href="tel:${cleanPhone}" class="phone-call-btn"><i class="fa-solid fa-phone-volume"></i> ${car.phone || 'Qo\'ng\'iroq'}</a>
+                    <a href="https://t.me/${cleanPhone.replace('+', '')}" target="_blank" class="tg-btn"><i class="fa-brands fa-telegram"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            ${car.receiptImage ? `<section style="margin-top:18px;border:1px solid #334155;border-radius:14px;overflow:hidden;background:#111827;color:#fff">
+              <button type="button" aria-expanded="false" onclick="(function(b){var p=b.nextElementSibling;var open=p.style.display==='block';p.style.display=open?'none':'block';b.setAttribute('aria-expanded',String(!open));b.querySelector('.receipt-chevron').style.transform=open?'rotate(0deg)':'rotate(180deg)'})(this)" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:#1f2937;color:#fff;border:0;text-align:left;font-size:1rem;font-weight:700;cursor:pointer">
+                <span><i class="fa-solid fa-file-image" style="color:#f59e0b;margin-right:10px"></i>Tilxat</span>
+                <i class="fa-solid fa-chevron-down receipt-chevron" style="transition:transform .2s;color:#fff"></i>
+              </button>
+              <div style="display:none;padding:16px;background:#111827">
+                <img src="${car.receiptImage}" alt="${car.name} tilxat rasmi" style="display:block;width:100%;max-width:700px;max-height:70vh;object-fit:contain;margin:0 auto;border-radius:10px;background:#fff">
+              </div>
+            </section>` : `<section style="margin-top:18px;padding:14px 16px;border:1px solid #334155;border-radius:14px;background:#111827;color:#fff"><i class="fa-solid fa-file-image" style="color:#f59e0b;margin-right:10px"></i>Tilxat rasmi yuklanmagan</section>`}
+
+          <!-- Bottom Actions -->
+          <div class="detail-actions-bar">
+            <button type="button" class="btn secondary" data-action="back-to-cars"><i class="fa-solid fa-arrow-left"></i> Ro'yxatga Qaytish</button>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn secondary" data-action="print-car" data-id="${car.id}"><i class="fa-solid fa-print"></i> Chop Etish</button>
+              <button type="button" class="btn secondary" data-action="edit-car" data-id="${car.id}"><i class="fa-solid fa-pen-to-square"></i> Tahrirlash</button>
+              <button type="button" class="btn danger" data-action="delete-car" data-id="${car.id}"><i class="fa-solid fa-trash-can"></i> O'chirish</button>
+            </div>
+          </div>
+        `;
+      },
+
+      prepareCarsListPrint() {
+        const c = document.getElementById('print-section');
+        if (!c) return;
+        const cars = window.store.getAll();
+        c.innerHTML = `
+          <div style="padding: 10px;">
+            <h2 style="color: #003399; margin-bottom: 8px;">"BIZDA BOR" AVTO ARENDA HISOBOTI</h2>
+            <table class="excel-table">
+              <thead>
+                <tr><th>№</th><th>Model</th><th>Davlat Raqami</th><th>Mijoz</th><th>Telefon</th><th>To'lov Kuni</th><th>Narxi</th><th>To'lov</th></tr>
+              </thead>
+              <tbody>
+                ${cars.map((x, i) => `<tr><td>${i+1}</td><td>${x.name}</td><td>${x.plate}</td><td>${x.customer}</td><td>${x.phone}</td><td>${x.shortDate}</td><td>${x.price}</td><td>${x.paid ? "To'landi" : "To'lanmadi"}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      prepareCarDetailPrint(carId) {
+        const c = document.getElementById('print-section');
+        if (!c) return;
+        const car = window.store.getById(carId);
+        if (!car) return;
+        c.innerHTML = `
+          <div style="padding: 16px; font-family: sans-serif;">
+            <h2 style="color: #003399;">"BIZDA BOR" AVTO ARENDA DALOLATNOMASI № ${car.id}</h2>
+            <table class="excel-table" style="margin-top: 14px; font-size: 10pt;">
+              <tr><th style="width: 200px;">Model:</th><td>${car.name}</td></tr>
+              <tr><th>Davlat Raqami:</th><td>${car.plate}</td></tr>
+              <tr><th>Mijoz (F.I.Sh):</th><td>${car.customer}</td></tr>
+              <tr><th>Telefon:</th><td>${car.phone}</td></tr>
+              <tr><th>Oylik Narxi:</th><td>${car.price}</td></tr>
+              <tr><th>To'lov Sanasi:</th><td>${car.shortDate}</td></tr>
+              <tr></tr>
+              <tr><th>Eslatma:</th><td>${car.notes || '—'}</td></tr>
+            </table>
+          </div>
+        `;
+      }
+    };
+    window.UI = UI;
+
+    /* 4. APPLICATION CONTROLLER */
+    class AppController {
+      constructor() {
+        this.currentView = 'home';
+        this.selectedCarId = null;
+        this.editingCarId = null;
+        this.carToDeleteId = null;
+        this.searchQuery = '';
+        this.searchTimer = null;
+      }
+
+      init() {
+        this.initTheme();
+        this.bindEvents();
+        this.handleInitialRoute();
+        window.store.onSave((timeStr) => window.UI.updateAutoSaveStatus(timeStr));
+        if (window.store.lastSaved) window.UI.updateAutoSaveStatus(window.store.lastSaved);
+        window.store.fetchFromSupabase();
+      }
+
+      initTheme() {
+        const saved = localStorage.getItem('bizdabor_theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this.setTheme(saved === 'dark' || (!saved && prefersDark) ? 'dark' : 'light');
+      }
+
+      setTheme(t) {
+        const icon = document.getElementById('theme-toggle-icon');
+        if (t === 'dark') {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('bizdabor_theme', 'dark');
+          if (icon) { icon.className = 'fa-solid fa-sun'; icon.style.color = '#fbbf24'; }
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('bizdabor_theme', 'light');
+          if (icon) { icon.className = 'fa-solid fa-moon'; icon.style.color = ''; }
+        }
+      }
+
+      toggleTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        this.setTheme(isDark ? 'light' : 'dark');
+      }
+
+      handleInitialRoute() {
+        const h = window.location.hash.replace('#', '');
+        if (h.startsWith('detail=')) this.openCarDetail(h.split('=')[1]);
+        else if (h === 'cars') this.showView('cars');
+        else if (h === 'settings') this.showView('settings');
+        else if (h === 'penalties') this.showView('penalties');
+        else this.showView('home');
+      }
+
+      showView(viewName, updateHash = true) {
+        ['home', 'cars', 'penalties', 'detail', 'settings'].forEach(v => {
+          const el = document.getElementById(`view-${v}`);
+          if (el) el.classList.toggle('active', v === viewName);
+        });
+
+        this.currentView = viewName;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.querySelectorAll('#bottom-nav .nav-item').forEach(item => {
+          const t = item.getAttribute('data-view');
+          item.classList.toggle('active', t === viewName || (viewName === 'detail' && t === 'cars'));
+        });
+
+        if (updateHash) {
+          if (viewName === 'home') history.pushState(null, '', '#home');
+          else if (viewName === 'detail') history.pushState(null, '', `#detail=${this.selectedCarId}`);
+          else history.pushState(null, '', `#${viewName}`);
+        }
+        this.renderCurrentView();
+      }
+
+      renderCurrentView() {
+        if (this.currentView === 'cars') this.filterCars();
+        else if (this.currentView === 'detail' && this.selectedCarId) window.UI.renderDetail(this.selectedCarId);
+        else if (this.currentView === 'penalties') window.UI.renderPenaltiesView();
+        else if (this.currentView === 'home') window.UI.renderStats();
+        else if (this.currentView === 'settings') renderSettingsPage();
+      }
+
+      openCarDetail(id) {
+        this.selectedCarId = Number(id);
+        this.showView('detail');
+      }
+
+      async togglePaid(id, isPaid) {
+        const updated = await window.store.setPaidStatus(id, isPaid);
+        if (updated) {
+          this.renderCurrentView();
+          window.UI.showToast(isPaid ? `${updated.name}: To'landi` : `${updated.name}: To'lanmadi`, isPaid ? 'success' : 'warning', 1800);
+        }
+      }
+
+      async adjustCarPenalty(id, delta) {
+        const updated = await window.store.updatePenaltyPoints(id, delta);
+        if (updated) {
+          this.renderCurrentView();
+          window.UI.showToast(`${updated.name}: Jarima ${updated.penaltyPoints}/12`, delta > 0 ? 'warning' : 'info', 1800);
+        }
+      }
+
+      filterCars() {
+        const all = window.store.getAll();
+        const q = (this.searchQuery || '').toLowerCase().trim();
+        if (!q) { window.UI.renderCarsTable(all); return; }
+        const f = all.filter(c => (c.name && c.name.toLowerCase().includes(q)) || (c.plate && c.plate.toLowerCase().includes(q)) || (c.customer && c.customer.toLowerCase().includes(q)) || (c.phone && c.phone.includes(q)) || (c.shortDate && c.shortDate.toLowerCase().includes(q)));
+        window.UI.renderCarsTable(f);
+      }
+
+      openModal(mId) {
+        const m = document.getElementById(mId);
+        if (m) {
+          try { m.showModal(); } catch (e) { m.classList.add('open'); }
+        }
+      }
+
+      closeModal(mId) {
+        const m = document.getElementById(mId);
+        if (m) {
+          try { m.close(); } catch (e) {}
+          m.classList.remove('open');
+        }
+      }
+
+      openAddModal() {
+        this.editingCarId = null;
+        this.pendingReceiptImage = '';
+        const form = document.getElementById('car-form');
+        if (form) form.reset();
+        const preview = document.getElementById('receipt-image-preview'); if (preview) { preview.src = ''; preview.style.display = 'none'; }
+        document.getElementById('modal-car-title').textContent = "Yangi Mashina Qo'shish";
+        document.getElementById('form-taken-date').value = new Date().toLocaleDateString('ru-RU');
+        this.openModal('car-modal');
+      }
+
+      openEditModal(id) {
+        const car = window.store.getById(id);
+        if (!car) return;
+        this.editingCarId = Number(id);
+        this.pendingReceiptImage = car.receiptImage || '';
+        const preview = document.getElementById('receipt-image-preview'); if (preview) { preview.src = this.pendingReceiptImage; preview.style.display = this.pendingReceiptImage ? 'block' : 'none'; }
+        document.getElementById('modal-car-title').textContent = `Tahrirlash: ${car.name}`;
+        document.getElementById('form-name').value = car.name || '';
+        document.getElementById('form-plate').value = car.plate || '';
+        document.getElementById('form-short-date').value = car.shortDate || '';
+        document.getElementById('form-price').value = car.price || '';
+        document.getElementById('form-customer').value = car.customer || '';
+        document.getElementById('form-taken-date').value = car.takenDate || '';
+        document.getElementById('form-phone').value = car.phone || '';
+        const penaltyField = document.getElementById('form-penalties'); if (penaltyField) penaltyField.value = 0;
+        document.getElementById('form-notes').value = car.notes || '';
+        this.openModal('car-modal');
+      }
+
+      async saveCarForm(e) {
+        e.preventDefault();
+        // Ensure image reading/compression finishes before saving the form.
+        if (this.receiptProcessing) {
+          try { await this.receiptProcessing; } catch (err) { console.error('Tilxat rasmini tayyorlash xatosi:', err); }
+        }
+        const name = (document.getElementById('form-name').value || '').trim();
+        const plate = (document.getElementById('form-plate').value || '').trim();
+        if (!name || !plate) {
+          window.UI.showToast("Model va raqamni to'ldiring!", "warning");
+          return;
+        }
+
+        const payload = {
+          name, plate,
+          shortDate: document.getElementById('form-short-date').value.trim(),
+          price: document.getElementById('form-price').value.trim(),
+          customer: document.getElementById('form-customer').value.trim() || "Noma'lum",
+          takenDate: document.getElementById('form-taken-date').value.trim(),
+          phone: document.getElementById('form-phone').value.trim() || "+998",
+
+          notes: document.getElementById('form-notes').value.trim(),
+          receiptImage: this.pendingReceiptImage || ''
+        };
+
+        if (this.editingCarId) {
+          await window.store.update(this.editingCarId, payload);
+          window.UI.showToast(`"${name}" yangilandi!`, "success");
+        } else {
+          const added = await window.store.add(payload);
+          window.UI.showToast(`"${name}" qo'shildi!`, "success");
+          this.selectedCarId = added ? added.id : null;
+        }
+        // Verify the receipt image is still present in the local saved record before closing.
+        const savedCar = this.editingCarId ? window.store.getById(this.editingCarId) : window.store.getById(this.selectedCarId);
+        if (this.pendingReceiptImage && savedCar && !savedCar.receiptImage) {
+          window.UI.showToast('Tilxat saqlanmadi. Rasmni kichikroq qilib qayta tanlang.', 'warning');
+          return;
+        }
+        this.closeModal('car-modal');
+        this.renderCurrentView();
+      }
+
+      confirmDelete(id) {
+        const car = window.store.getById(id);
+        if (!car) return;
+        this.carToDeleteId = Number(id);
+        document.getElementById('delete-modal-msg').innerHTML = `Haqiqatan ham <strong>${car.name} (${car.plate})</strong> mashinasini o'chirmoqchimisiz?`;
+        this.openModal('delete-modal');
+      }
+
+      async executeDelete() {
+        if (!this.carToDeleteId) return;
+        const car = window.store.getById(this.carToDeleteId);
+        if (car) {
+          try {
+            const archive = JSON.parse(localStorage.getItem('bizdabor_deleted_cars') || '[]');
+            archive.unshift({ ...car, archivedAt: new Date().toISOString() });
+            localStorage.setItem('bizdabor_deleted_cars', JSON.stringify(archive));
+          } catch (err) { console.warn('Arxivga saqlash xatosi', err); }
+        }
+        await window.store.delete(this.carToDeleteId);
+        this.closeModal('delete-modal');
+        this.carToDeleteId = null;
+        window.UI.showToast(`"${car ? car.name : ''}" o'chirildi!`, "info");
+        if (this.currentView === 'detail') this.showView('cars');
+        else this.renderCurrentView();
+      }
+
+      bindEvents() {
+        document.getElementById('btn-theme-toggle').addEventListener('click', () => this.toggleTheme());
+
+        const sInput = document.getElementById('search-input');
+        if (sInput) {
+          sInput.addEventListener('input', (e) => {
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(() => {
+              this.searchQuery = e.target.value;
+              this.filterCars();
+            }, 250);
+          });
+        }
+
+        const receiptInput = document.getElementById('form-receipt-image');
+        if (receiptInput) receiptInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0]; if (!file) return;
+          if (!file.type.startsWith('image/')) { window.UI.showToast('Faqat rasm faylini tanlang', 'warning'); e.target.value=''; return; }
+          if (file.size > 10 * 1024 * 1024) { window.UI.showToast('Rasm hajmi 10 MB dan oshmasin', 'warning'); e.target.value=''; return; }
+          // Keep a promise so clicking Save immediately cannot race the file reader/compressor.
+          this.receiptProcessing = new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => { window.UI.showToast('Rasmni o‘qib bo‘lmadi. Qayta tanlang.', 'warning'); reject(reader.error || new Error('FileReader error')); };
+            reader.onload = () => {
+              const source = new Image();
+              source.onload = () => {
+                try {
+                  const maxSide = 640;
+                  const scale = Math.min(1, maxSide / Math.max(source.width, source.height));
+                  const canvas = document.createElement('canvas');
+                  canvas.width = Math.max(1, Math.round(source.width * scale));
+                  canvas.height = Math.max(1, Math.round(source.height * scale));
+                  const ctx = canvas.getContext('2d');
+                  if (!ctx) throw new Error('Canvas unavailable');
+                  ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+                  const compressed = canvas.toDataURL('image/jpeg', 0.35);
+                  if (compressed.length > 450000) throw new Error('Compressed image too large');
+                  this.pendingReceiptImage = compressed;
+                  const img = document.getElementById('receipt-image-preview');
+                  if (img) { img.src = compressed; img.style.display = 'block'; }
+                  window.UI.showToast('Tilxat rasmi saqlashga tayyor', 'success');
+                  resolve(compressed);
+                } catch (err) { window.UI.showToast('Rasm tayyorlanmadi. Boshqa rasm tanlang.', 'warning'); reject(err); }
+              };
+              source.onerror = () => { window.UI.showToast('Rasmni ochib bo‘lmadi. Boshqa rasm tanlang.', 'warning'); reject(new Error('Image load error')); };
+              source.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+          }).catch(err => { console.error(err); return ''; });
+        });
+        document.getElementById('car-form').addEventListener('submit', (e) => this.saveCarForm(e));
+        document.getElementById('btn-confirm-delete').addEventListener('click', () => this.executeDelete());
+
+        document.getElementById('supabase-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          window.SupabaseConfig.setCredentials(document.getElementById('supabase-url-input').value, document.getElementById('supabase-key-input').value);
+          this.closeModal('supabase-modal');
+          window.UI.showToast("Sozlamalar saqlandi, ulanmoqda...", "info");
+          await window.store.fetchFromSupabase();
+        });
+
+        const imp = document.getElementById('json-import-input');
+        if (imp) {
+          imp.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+              window.store.importJSON(e.target.files[0])
+                .then(() => { window.UI.showToast("Ma'lumotlar yuklandi!", "success"); this.renderCurrentView(); })
+                .catch(err => window.UI.showToast(err.message, "error"));
+              e.target.value = '';
+            }
+          });
+        }
+
+        window.addEventListener('popstate', () => this.handleInitialRoute());
+
+        // Global Click Event Delegation
+        document.addEventListener('click', (e) => {
+          const t = e.target.closest('button, a, [data-action], [data-view-target], [data-close-modal], [data-car-id], #sync-indicator, #card-cloud-status');
+          if (!t) return;
+
+          const cId = t.getAttribute('data-close-modal');
+          if (cId) { e.preventDefault(); this.closeModal(cId); return; }
+
+          if (t.id === 'sync-indicator' || t.id === 'card-cloud-status') {
+            e.preventDefault();
+            document.getElementById('supabase-url-input').value = window.SupabaseConfig.getUrl();
+            document.getElementById('supabase-key-input').value = window.SupabaseConfig.getKey();
+            this.openModal('supabase-modal');
+            return;
+          }
+
+          const nItem = t.closest('#bottom-nav .nav-item');
+          if (nItem) { e.preventDefault(); this.showView(nItem.getAttribute('data-view')); return; }
+
+          const vTarget = t.getAttribute('data-view-target');
+          if (vTarget) { e.preventDefault(); this.showView(vTarget); return; }
+
+          if (t.id === 'btn-back-from-detail') { e.preventDefault(); this.showView('cars'); return; }
+          if (t.id === 'btn-open-add-car' || t.id === 'btn-fab-add-car') { e.preventDefault(); this.openAddModal(); return; }
+          if (t.id === 'btn-export-excel' || t.id === 'btn-export-excel-home') { e.preventDefault(); window.store.exportExcelCSV(); return; }
+          if (t.id === 'btn-export-json') { e.preventDefault(); window.store.exportJSON(); return; }
+          if (t.id === 'btn-reset-data') {
+            e.preventDefault();
+            if (confirm("Namunaviy ma'lumotlarni tiklaysizmi?")) {
+              window.store.resetToDefault();
+              this.renderCurrentView();
+            }
+            return;
+          }
+          if (t.id === 'btn-print-table') {
+            e.preventDefault();
+            window.UI.prepareCarsListPrint();
+            setTimeout(() => window.print(), 100);
+            return;
+          }
+
+          const action = t.getAttribute('data-action');
+          const carId = t.getAttribute('data-id');
+
+          if (action) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (action === 'set-paid') this.togglePaid(carId, t.getAttribute('data-value') === 'true');
+            else if (action === 'view-detail') this.openCarDetail(carId);
+            else if (action === 'edit-car') this.openEditModal(carId);
+            else if (action === 'delete-car') this.confirmDelete(carId);
+            else if (action === 'adjust-penalty') this.adjustCarPenalty(carId, parseInt(t.getAttribute('data-delta'), 10) || 0);
+            else if (action === 'back-to-cars') this.showView('cars');
+            else if (action === 'print-car') { window.UI.prepareCarDetailPrint(carId); setTimeout(() => window.print(), 100); }
+            return;
+          }
+
+          const carRow = t.closest('tr[data-car-id]');
+          if (carRow && !t.closest('[data-stop-propagation="true"]')) {
+            const rId = carRow.getAttribute('data-car-id');
+            if (rId) this.openCarDetail(rId);
+          }
+        });
+      }
+    }
+
+    window.app = new AppController();
+    document.addEventListener('DOMContentLoaded', () => window.app.init());
+  </script>
+
+<script>
+  // Menyuda "Ijaralar" nomli alohida band bo'lsa, faqat o'sha bandni yashirish.
+  function renderSettingsPage() {
+    const cars = (window.store && window.store.cars) || [];
+    const paid = cars.filter(c => !!c.paid).length;
+    const unpaid = cars.length - paid;
+    const money = cars.reduce((sum,c) => sum + (parseFloat(String(c.price||'').replace(/[^0-9.]/g,'')) || 0), 0);
+    const stats = document.getElementById('settings-report-stats');
+    if (stats) stats.innerHTML = `<div class="stat-card"><div class="stat-info"><span class="stat-label">Jami mashina</span><span class="stat-value">${cars.length}</span></div></div><div class="stat-card"><div class="stat-info"><span class="stat-label">To‘langan</span><span class="stat-value">${paid}</span></div></div><div class="stat-card"><div class="stat-info"><span class="stat-label">To‘lanmagan</span><span class="stat-value">${unpaid}</span></div></div><div class="stat-card"><div class="stat-info"><span class="stat-label">Narxlar jami</span><span class="stat-value">${money.toLocaleString('uz-UZ')}</span></div></div>`;
+    const list = document.getElementById('archived-cars-list');
+    let archived=[]; try { archived=JSON.parse(localStorage.getItem('bizdabor_deleted_cars')||'[]'); } catch(e){}
+    if (list) list.innerHTML = archived.length ? archived.map((c,i)=>`<div class="status-item" style="margin:8px 0;display:flex;justify-content:space-between;gap:12px;align-items:center"><div><strong>${escapeSettingsText(c.name||'Mashina')} — ${escapeSettingsText(c.plate||'')}</strong><div class="status-label">${escapeSettingsText(c.customer||'Mijoz ko‘rsatilmagan')} · ${c.archivedAt ? new Date(c.archivedAt).toLocaleDateString('uz-UZ') : ''}</div></div><button type="button" class="btn primary" data-restore-archive="${i}">Qayta tiklash</button></div>`).join('') : '<p>Arxiv bo‘sh. O‘chirilgan mashinalar shu yerda saqlanadi.</p>';
+    const time=document.getElementById('settings-save-time'); if(time) time.textContent='Oxirgi saqlanish: '+(localStorage.getItem('bizdabor_last_saved')||localStorage.getItem('bizdabor_last_save')||'brauzer avtomatik saqlashi yoqilgan');
+  }
+  function escapeSettingsText(v){ return String(v).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  document.addEventListener('click', async e=>{
+    const restore=e.target.closest('[data-restore-archive]');
+    if(restore){ const i=Number(restore.getAttribute('data-restore-archive')); let a=JSON.parse(localStorage.getItem('bizdabor_deleted_cars')||'[]'); const car=a[i]; if(!car)return; delete car.archivedAt; try { const added=await window.store.add(car); if(added){a.splice(i,1);localStorage.setItem('bizdabor_deleted_cars',JSON.stringify(a)); if(window.UI?.showToast)window.UI.showToast('Mashina qayta tiklandi','success'); renderSettingsPage(); } } catch(err){alert('Mashina tiklanmadi. Qayta urinib ko‘ring.');} }
+    if(e.target.closest('#settings-export-csv')) { if(window.store?.exportExcelCSV) window.store.exportExcelCSV(); }
+    if(e.target.closest('#settings-backup')) { if(window.store?.exportJSON) window.store.exportJSON(); }
+    if(e.target.closest('#clear-archive') && confirm('Arxivdagi mashinalarni butunlay o‘chirasizmi?')) {localStorage.removeItem('bizdabor_deleted_cars');renderSettingsPage();}
+  });
+  document.getElementById('settings-import-file')?.addEventListener('change', async e=>{ const f=e.target.files?.[0]; if(!f)return; try{const data=JSON.parse(await f.text()); const cars=Array.isArray(data)?data:(data.cars||data.data||[]); if(!Array.isArray(cars))throw new Error('bad'); for(const car of cars) await window.store.add(car); alert('Zaxira nusxa import qilindi.'); renderSettingsPage();}catch(err){alert('JSON faylni o‘qib bo‘lmadi. To‘g‘ri zaxira faylini tanlang.');} e.target.value=''; });
+
+  document.querySelectorAll('.nav-item, .menu-item, nav a, nav button').forEach(function (item) {
+    if ((item.textContent || '').trim().toLocaleLowerCase('uz').replace(/\s+/g, ' ') === 'ijaralar') {
+      item.remove();
+    }
+  });
+</script>
+
+</body>
+</html>
+
